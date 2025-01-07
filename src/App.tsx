@@ -22,7 +22,6 @@ function App() {
     const getAllTodos = async () => {
       const todosDate = await GetAllTodos(); // await用復習
       console.log(`It is mockDate: ${todosDate}`);
-      console.log(`It is todosDate: ${JSON.stringify(todosDate, null, 2)}`);
       setTodos(todosDate);
       setIsLoading(false);
     }
@@ -36,7 +35,7 @@ function App() {
 
   return (
     <>
-      <Button colorScheme='teal'>ボタン</Button>
+      <h1>タスク管理アプリ</h1>
       <Button colorScheme='blue'>Button</Button>
       <h1 data-testid="title">this title for test jest</h1>
       <TableContainer>
@@ -44,9 +43,8 @@ function App() {
             <TableCaption>Imperial to metric conversion factors</TableCaption>
             <Thead>
               <Tr>
-                <Th>To convert</Th>
-                <Th>into</Th>
-                <Th isNumeric>multiply by</Th>
+                <Th>task name</Th>
+                <Th>taked time</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -54,8 +52,7 @@ function App() {
                 return (
                   <Tr key={todo.id}>
                     <Td>{todo.title}</Td>
-                    <Td>{todo.done ? 'Done' : 'Not yet'}</Td>
-                    <Td>{todo.created_at.toLocaleString()}</Td>
+                    <Td>{todo.time}</Td>
                   </Tr>
                 )
               })}
