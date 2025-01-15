@@ -22,3 +22,9 @@ export async function sendAndGetTodosFromSupabase(taskName:string,taskTime:numbe
     await supabase.from("study_records").insert({title: taskName, time: taskTime});
     return await getTodosFromSupabase();
 }
+
+export async function deleteTodosFromSupabase(id:number) : Promise<Todo[]> {
+    
+    await supabase.from("study_records").delete().eq('id', id);
+    return await getTodosFromSupabase();
+}

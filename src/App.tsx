@@ -1,6 +1,6 @@
 import { Button, Input, VStack, FormControl, FormLabel, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { getTodosFromSupabase,sendAndGetTodosFromSupabase } from "./lib/todo"; // タスクリスト取得関数
+import { getTodosFromSupabase,sendAndGetTodosFromSupabase,deleteTodosFromSupabase } from "./lib/todo";
 import { Todo } from "./domain/todo"; // タスク型定義
 import {
   Modal,
@@ -20,13 +20,16 @@ function App() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
-  const [taskName, setTaskName] = useState("");
-  const [taskTime, setTaskTime] = useState("");
+  // const [taskName, setTaskName] = useState("");
+  // const [taskTime, setTaskTime] = useState("");
+  // フォーム部分
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
     const getAllTodos = async () => {
       try {
         setTodos(await getTodosFromSupabase()); // タスクリストをセット
+        reset(); // フォームのリセット
       } catch (error) {
         console.error("タスクリスト取得中にエラー:", error);
       } finally {
@@ -40,21 +43,25 @@ function App() {
     return <p>Loading...</p>;
   }
 
-  const handleSave = async () => {
-    if (!taskName || isNaN(Number(taskTime))) {
-      console.error("タスク名または時間が無効です");
-      return;
-    }
-  
+  const onSubmit = async (data) => {
     try {
-      const updatedTodos = await sendAndGetTodosFromSupabase(taskName, Number(taskTime));
+      const updatedTodos = await sendAndGetTodosFromSupabase(data.taskName, Number(data.taskTime));
       setTodos(updatedTodos); // タスクリストを更新
+      reset(); // フォームのリセット
       onClose(); // モーダルを閉じる
     } catch (error) {
       console.error("タスクの保存中にエラー:", error);
     }
   };
-  
+
+  const onDelete = async (id:number) => {
+    try {
+      const updatedTodos = await deleteTodosFromSupabase(id);
+      setTodos(updatedTodos); // タスクリストを更新
+    } catch (error) {
+      console.error("タスクの削除中にエラー:", error);
+    }
+  };
 
   return (
     <VStack spacing={4} align="stretch" p={4}>
@@ -77,22 +84,41 @@ function App() {
           <ModalBody pb={6}>
             <FormControl>
               <FormLabel>タスクの名前</FormLabel>
-              <Input ref={initialRef} placeholder='First name' value={taskName} onChange={(e) => setTaskName(e.target.value)}/>
-            </FormControl>
+              <Input 
+                  ref={initialRef} 
+                  placeholder="タスクの名前" 
+                  {...register("taskName", { 
+                    required: "タスク名は必須です" ,
+                    validate: {
+                      isMaxLength:value => value.length <= 20 || "20文字以内で入力してください"
+                    }
+                  })} 
+                />
+                {errors.taskName && <span>{errors.taskName.message}</span>}
+              </FormControl>
 
             <FormControl mt={4}>
               <FormLabel>タスクにかかる時間</FormLabel>
-              <Input placeholder='Last name' value={taskTime} onChange={(e) => setTaskTime(e.target.value)}/>
+              <Input 
+                placeholder="タスクにかかる時間" 
+                {...register("taskTime", { 
+                  required: "時間は必須です", 
+                  validate: {
+                    isNumber:value => !isNaN(Number(value)) || "数値を入力してください" ,
+                    isPositiveNumber:value => Number(value) > 0 || "0より大きい数値を入力してください"
+                  }
+                })}
+              />
+              {errors.taskTime && <span>{errors.taskTime.message}</span>}
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button 
-              colorScheme='blue' 
+          <Button 
+              colorScheme="blue" 
               mr={3}
-              // 以下のonClick関数を実装する、supaに投げる用の関数を渡す
-              onClick={handleSave}
-              >
+              onClick={handleSubmit(onSubmit)}
+            >
               Save
             </Button>
             <Button onClick={onClose}>Cancel</Button>
@@ -115,6 +141,15 @@ function App() {
               <Tr key={todo.id}>
                 <Td>{todo.title}</Td>
                 <Td>{todo.time}</Td>
+                {/* 削除ボタンの実装 */}
+                <Td>
+                  <Button
+                    colorScheme="red"
+                    onClick={() => onDelete(todo.id)}
+                  >
+                    削除
+                  </Button>
+                </Td>
               </Tr>
             ))}
           </Tbody>
