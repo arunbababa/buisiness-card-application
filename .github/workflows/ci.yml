@@ -20,6 +20,11 @@ jobs:
       - name: 依存関係をインストール
         run: npm install
 
+      - name: Supabase 環境変数を設定
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> $GITHUB_ENV
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> $GITHUB_ENV
+
       - name: アプリをビルド
         run: npm run build
 
@@ -27,9 +32,9 @@ jobs:
         run: npm run test
 
   deploy:
-    needs: build-and-test
+    needs: build-and-test  # テストが成功したらデプロイ実行
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # mainブランチの時のみデプロイ
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
@@ -49,9 +54,3 @@ jobs:
 
       - name: Firebase にデプロイ
         run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
-
-      - name: Supabase にデプロイ
-        run: supabase db push
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
