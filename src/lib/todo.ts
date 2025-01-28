@@ -2,9 +2,7 @@ import { Todo } from "../domain/todo";
 import { supabase } from "../utils/supabase";
 
 export async function getTodosFromSupabase() : Promise<Todo[]> {
-    
     const resFromSupabase = await supabase.from("study_records").select("*");
-
     if (!resFromSupabase.error) {
         const todos = resFromSupabase.data.map((todo) => {
             console.log(`It is todo: ${JSON.stringify(todo, null, 2)}`);
@@ -17,14 +15,17 @@ export async function getTodosFromSupabase() : Promise<Todo[]> {
     }
 }
 
-export async function sendAndGetTodosFromSupabase(taskName:string,taskTime:number) : Promise<Todo[]> {
-    
+export async function sendTodosToSupabase(taskName:string,taskTime:number) {
     await supabase.from("study_records").insert({title: taskName, time: taskTime});
-    return await getTodosFromSupabase();
+    return console.log("supabaseに登録しました。");
 }
 
-export async function deleteTodosFromSupabase(id:number) : Promise<Todo[]> {
-    
+export async function deleteTodosFromSupabase(id:number) {
     await supabase.from("study_records").delete().eq('id', id);
-    return await getTodosFromSupabase();
+    return console.log("supabaseから削除しました。");
+}
+
+export async function updateTodosFromSupabase(id:number, taskName:string, taskTime:number) {
+    await supabase.from("study_records").update({title: taskName, time: taskTime}).eq('id', id);
+    return console.log("supabaseを更新しました。");
 }

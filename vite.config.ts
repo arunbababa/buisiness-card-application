@@ -6,6 +6,10 @@ import env from "vite-plugin-env-compatible";
 export default defineConfig({
     plugins: [
     react(),
+    // ここでprefixをVITEに設定しているのか
     env({ prefix: "VITE" }) 
   ],
+  build: {
+    outDir: 'build', // ビルド出力先
+  }
 });

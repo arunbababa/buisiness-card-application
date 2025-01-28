@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # mainブランチにPushされたら実行
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 依存関係をインストール
+        run: npm install
+
+      - name: アプリをビルド
+        run: npm run build
+
+      - name: テストを実行
+        run: npm run test
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # mainブランチの時のみデプロイ
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 依存関係をインストール
+        run: npm install
+
+      - name: Firebase CLI をセットアップ
+        uses: w9jds/setup-firebase@v1
+        with:
+          token: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Firebase にデプロイ
+        run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Supabase にデプロイ
+        run: supabase db push
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

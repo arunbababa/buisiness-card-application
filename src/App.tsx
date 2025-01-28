@@ -1,6 +1,6 @@
 import { Button, Input, VStack, FormControl, FormLabel, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { getTodosFromSupabase,sendAndGetTodosFromSupabase,deleteTodosFromSupabase } from "./lib/todo";
+import { getTodosFromSupabase,sendTodosToSupabase,deleteTodosFromSupabase,updateTodosFromSupabase } from "./lib/todo";
 import { Todo } from "./domain/todo"; // タスク型定義
 import {
   Modal,
@@ -17,13 +17,18 @@ function App() {
 
   const [todos, setTodos] = useState<Todo[]>([]); 
   const [isLoading, setIsLoading] = useState(true); 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [currentTask, setCurrentTask] = useState<{ id: number; taskName: string; taskTime: number } | null>(null); // 編集対象のタスク
+  // 既存のモーダル用ステート
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
+  // 新たに編集モーダル用のステートを追加
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();  
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
-  // const [taskName, setTaskName] = useState("");
-  // const [taskTime, setTaskTime] = useState("");
-  // フォーム部分
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<{
+    taskName: string;
+    taskTime: number;
+  }>();
+  
 
   useEffect(() => {
     const getAllTodos = async () => {
@@ -43,39 +48,59 @@ function App() {
     return <p>Loading...</p>;
   }
 
-  const onSubmit = async (data) => {
+  // 既存：タスク追加用の送信処理
+  const onSubmitAdd = async (data: { taskName: string; taskTime: number }) => {
     try {
-      const updatedTodos = await sendAndGetTodosFromSupabase(data.taskName, Number(data.taskTime));
-      setTodos(updatedTodos); // タスクリストを更新
-      reset(); // フォームのリセット
-      onClose(); // モーダルを閉じる
+      await sendTodosToSupabase(data.taskName, Number(data.taskTime));
+      const updatedTodos = await getTodosFromSupabase();
+      setTodos(updatedTodos);
+      reset();
+      onAddClose();
     } catch (error) {
       console.error("タスクの保存中にエラー:", error);
     }
   };
 
   const onDelete = async (id:number) => {
+    await deleteTodosFromSupabase(id);
+    const updatedTodos = await getTodosFromSupabase();
+    setTodos(updatedTodos);
+  }
+
+  // 新規：タスク編集用の送信処理
+  const onSubmitEdit = async (data: { taskName: string; taskTime: number }) => {
+    if (!currentTask) return;
     try {
-      const updatedTodos = await deleteTodosFromSupabase(id);
-      setTodos(updatedTodos); // タスクリストを更新
+      await updateTodosFromSupabase(currentTask.id, data.taskName, Number(data.taskTime));
+      const updatedTodos = await getTodosFromSupabase();
+      setTodos(updatedTodos);
+      setCurrentTask(null); // 編集対象をリセット
+      reset();
+      onEditClose();
     } catch (error) {
-      console.error("タスクの削除中にエラー:", error);
+      console.error("タスクの更新中にエラー:", error);
     }
+  };
+
+  // 新規：編集モーダルを開く関数
+  const openEditModal = (todo: Todo) => {
+    setCurrentTask({ id: todo.id, taskName: todo.title, taskTime: todo.time }); // 編集対象のタスクを設定
+    reset({ taskName: todo.title, taskTime: todo.time }); // 初期値をフォームにセット
+    onEditOpen(); // 編集モーダルを開く
   };
 
   return (
     <VStack spacing={4} align="stretch" p={4}>
 
-      <h1>タスク管理アプリ</h1>
+      <h1 data-testid="title">タスク管理アプリ</h1>
 
-
-      {/* タスク追加フォーム */}
-      <Button onClick={onOpen}>タスクを登録する</Button>
+      {/* タスク追加モーダル */}
+      <Button onClick={onAddOpen}>タスクを登録する</Button>
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isAddOpen}
+        onClose={onAddClose}
       >
         <ModalOverlay />
         <ModalContent>
@@ -85,7 +110,6 @@ function App() {
             <FormControl>
               <FormLabel>タスクの名前</FormLabel>
               <Input 
-                  ref={initialRef} 
                   placeholder="タスクの名前" 
                   {...register("taskName", { 
                     required: "タスク名は必須です" ,
@@ -94,7 +118,7 @@ function App() {
                     }
                   })} 
                 />
-                {errors.taskName && <span>{errors.taskName.message}</span>}
+                {errors.taskName && <span>{String(errors.taskName.message)}</span>}
               </FormControl>
 
             <FormControl mt={4}>
@@ -109,7 +133,7 @@ function App() {
                   }
                 })}
               />
-              {errors.taskTime && <span>{errors.taskTime.message}</span>}
+              {errors.taskTime && <span>{String(errors.taskTime.message)}</span>}
             </FormControl>
           </ModalBody>
 
@@ -117,11 +141,47 @@ function App() {
           <Button 
               colorScheme="blue" 
               mr={3}
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(onSubmitAdd)}
             >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onAddClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* タスク編集モーダル */}
+      <Modal isOpen={isEditOpen} onClose={onEditClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>タスクを編集しましょう！</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>タスクの名前</FormLabel>
+              <Input
+                placeholder="タスクの名前"
+                {...register("taskName", { required: "タスク名は必須です" })}
+              />
+              {errors.taskName && <span>{errors.taskName.message}</span>}
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>タスクにかかる時間</FormLabel>
+              <Input
+                placeholder="タスクにかかる時間"
+                {...register("taskTime", {
+                  required: "時間は必須です",
+                  validate: value => !isNaN(Number(value)) || "数値を入力してください",
+                })}
+              />
+              {errors.taskTime && <span>{errors.taskTime.message}</span>}
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSubmit(onSubmitEdit)}>
+              Save
+            </Button>
+            <Button onClick={onEditClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -141,13 +201,20 @@ function App() {
               <Tr key={todo.id}>
                 <Td>{todo.title}</Td>
                 <Td>{todo.time}</Td>
-                {/* 削除ボタンの実装 */}
                 <Td>
                   <Button
                     colorScheme="red"
                     onClick={() => onDelete(todo.id)}
                   >
                     削除
+                  </Button>
+                </Td>
+                <Td>
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => openEditModal(todo)}
+                  >
+                    編集
                   </Button>
                 </Td>
               </Tr>

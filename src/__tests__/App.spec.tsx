@@ -4,16 +4,15 @@ import { Todo } from "../domain/todo";
 
 // モックの作成と呼び出し
 const mockGetAllTodos = jest.fn().mockResolvedValue([
-  new Todo(1, 'test1', false, new Date()),
-  new Todo(2, 'test2', true, new Date()),
-  new Todo(3, 'test3', false, new Date())
+  new Todo(1, 'test1', 2),
+  new Todo(2, 'test2', 5),
+  new Todo(3, 'test3', 7)
 ]);
 
-jest.mock("../lib/todo.ts", () => {
-  return {
-    GetAllTodos: () => mockGetAllTodos()
-  }
-});
+jest.mock("../lib/todo.ts", () => ({
+  getTodosFromSupabase: jest.fn(() => mockGetAllTodos()), // モック関数を返す
+}));
+
 
 describe('App', () => {
   test('タイトルがあることを確認し、jestの動作確認をする', async () => {
