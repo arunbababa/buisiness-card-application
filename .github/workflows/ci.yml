@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  # mainブランチにPushされたら実行
+      - master  # masterブランチにPushされたら実行
 
 jobs:
   build-and-test:
@@ -34,7 +34,7 @@ jobs:
   deploy:
     needs: build-and-test  # テストが成功したらデプロイ実行
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'  # masterブランチの時のみデプロイ
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
@@ -47,10 +47,8 @@ jobs:
       - name: 依存関係をインストール
         run: npm install
 
-      - name: Firebase CLI をセットアップ
-        uses: w9jds/setup-firebase@v1
-        with:
-          token: ${{ secrets.FIREBASE_TOKEN }}
+      - name: Firebase CLI をインストール
+        run: npm install -g firebase-tools
 
       - name: Firebase にデプロイ
         run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
