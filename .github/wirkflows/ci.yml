@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # mainブランチにPushされたら実行
+      - master  # mainブランチにPushされたら実行
 
 jobs:
   build-and-test:
