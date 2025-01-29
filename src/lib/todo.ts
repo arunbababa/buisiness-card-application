@@ -5,7 +5,6 @@ export async function getTodosFromSupabase() : Promise<Todo[]> {
     const resFromSupabase = await supabase.from("study_records").select("*");
     if (!resFromSupabase.error) {
         const todos = resFromSupabase.data.map((todo) => {
-            console.log(`It is todo: ${JSON.stringify(todo, null, 2)}`);
             return Todo.newTodo(todo.id, todo.title,todo.time);
         })
         return todos;
