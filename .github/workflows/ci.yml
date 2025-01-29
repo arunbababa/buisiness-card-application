@@ -28,8 +28,8 @@ jobs:
       - name: アプリをビルド
         run: npm run build
 
-      - name: 成功するテストのみ実行
-        run: npm run test -- --testPathPattern="(App|Table|AddTaskButton|Loading).spec.tsx"
+      - name: Run Tests
+        run: npm run test -- --testPathIgnorePatterns="Mock.spec.tsx"
 
   deploy:
     needs: build-and-test  # テストが成功したらデプロイ実行

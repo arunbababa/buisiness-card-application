@@ -7,8 +7,8 @@ describe("Table", () => {
     render(<App />);
 
     // 非同期で表示される場合は待機
-    await waitFor(() => {
-      const tableElement = screen.getByTestId("table"); // テーブルを取得
+    await waitFor(async () => {
+      const tableElement = await screen.findByTestId("table"); // テーブルを取得
       expect(tableElement).toBeInTheDocument(); // テーブルが存在することを確認
     });
   });
