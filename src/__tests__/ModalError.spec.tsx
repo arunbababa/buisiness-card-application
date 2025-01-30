@@ -14,8 +14,8 @@ describe("New Registration Button", () => {
         });
 
         const saveButtonElement = screen.getByRole("button", { name: "Save" });
-        saveButtonElement.click();
         expect(saveButtonElement).toBeInTheDocument();
+        saveButtonElement.click();
         
         waitFor(() => {
             const errorMessageTaskName = screen.getByText("タスク名は必須です");
