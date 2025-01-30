@@ -48,6 +48,17 @@ function App() {
     return <p>Loading...</p>;
   }
 
+  const openAddModal = () => {
+    reset({ taskName: "", taskTime: 0 }); // フォームを空にリセット
+    onAddOpen();
+  };
+  
+  const closeAddModal = () => {
+    reset({ taskName: "", taskTime: 0 }); // フォームをクリア
+    onAddClose();
+  };
+  
+
   // 既存：タスク追加用の送信処理
   const onSubmitAdd = async (data: { taskName: string; taskTime: number }) => {
     try {
@@ -95,12 +106,12 @@ function App() {
       <h1 data-testid="title">タスク管理アプリ</h1>
 
       {/* タスク追加モーダル */}
-      <Button onClick={onAddOpen}>タスクを登録する</Button>
+      <Button onClick={openAddModal}>タスクを登録する</Button>
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isAddOpen}
-        onClose={onAddClose}
+        onClose={closeAddModal}
       >
         <ModalOverlay />
         <ModalContent>
