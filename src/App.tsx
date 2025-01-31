@@ -12,6 +12,9 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
+import { MdDeleteForever } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+import { IoAddCircleSharp } from "react-icons/io5";
 
 function App() {
 
@@ -106,7 +109,7 @@ function App() {
       <h1 data-testid="title">タスク管理アプリ</h1>
 
       {/* タスク追加モーダル */}
-      <Button onClick={openAddModal}>タスクを登録する</Button>
+      <Button onClick={openAddModal}>タスクを登録する<IoAddCircleSharp /></Button>
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -217,7 +220,7 @@ function App() {
                     colorScheme="red"
                     onClick={() => onDelete(todo.id)}
                   >
-                    削除
+                    <MdDeleteForever />
                   </Button>
                 </Td>
                 <Td>
@@ -225,7 +228,7 @@ function App() {
                     colorScheme="blue"
                     onClick={() => openEditModal(todo)}
                   >
-                    編集
+                    <FaEdit />
                   </Button>
                 </Td>
               </Tr>
