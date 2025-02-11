@@ -1,50 +1,38 @@
-# React + TypeScript + Vite
+# タスク管理アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 使用技術
 
-Currently, two official plugins are available:
+- **フロントエンド**: React, TypeScript, Vite, Chakra UI, React Hook Form
+- **バックエンド・データベース**: Supabase, Firebase
+- **CI/CD**: GitHub Actions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 機能
 
-## Expanding the ESLint configuration
+- ✅ タスクの追加・編集・削除
+- 🔄 Supabase とのデータ同期
+- 🎨 Chakra UI を使用したシンプルな UI
+- 🔍 モーダルを活用したタスク編集
+- 💡 React Hook Form を活用したフォーム管理
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🛠 使い方
 
-- Configure the top-level `parserOptions` property like this:
+1. **タスクを追加** - タスクを入力し「追加」ボタンを押す
+2. **タスクを編集** - 編集アイコンをクリックして内容を変更
+3. **タスクを削除** - 削除アイコンをクリックしてタスクを削除
+4. **データ同期** - Supabase によりタスクが保存されます
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## 🔄 CI/CD
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+このプロジェクトでは GitHub Actions を使用して CI/CD を構築しています。
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **自動テスト**: プッシュ時にテストが実行されます。
+- **デプロイ**: メインブランチへのマージ時に Firebase Hosting へデプロイされます。
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 📜 ライセンス
+
+このプロジェクトは MIT ライセンスのもとで公開されています。
+
+---
+
+✨ 効率的にタスクを管理しましょう！ 🚀
+
