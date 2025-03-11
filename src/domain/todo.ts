@@ -1,4 +1,4 @@
-export class Todo {
+export class Todos {
     constructor(
         public id: number,
         public title: string,
@@ -9,7 +9,7 @@ export class Todo {
         id:number,
         title:string,
         time:number
-    ): Todo {
-        return new Todo(id, title,time);
+    ): Todos {
+        return new Todos(id, title,time);
       }
 }

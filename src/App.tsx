@@ -1,16 +1,8 @@
-import { Button, Input, VStack, FormControl, FormLabel, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, useDisclosure } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Button, Input, VStack, FormControl, FormLabel, Table, Thead, Tbody, Tr, Th, Td, TableCaption, TableContainer, useDisclosure} from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import { getTodosFromSupabase,sendTodosToSupabase,deleteTodosFromSupabase,updateTodosFromSupabase } from "./lib/todo";
-import { Todo } from "./domain/todo"; // タスク型定義
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react'
+import { Todos } from "./domain/todo"; // タスク型定義
+import { Modal,ModalOverlay,ModalContent,ModalHeader,ModalFooter,ModalBody,ModalCloseButton } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form';
 import { MdDeleteForever } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -18,19 +10,14 @@ import { IoAddCircleSharp } from "react-icons/io5";
 
 function App() {
 
-  const [todos, setTodos] = useState<Todo[]>([]); 
+  const [todos, setTodos] = useState<Todos[]>([]); 
   const [isLoading, setIsLoading] = useState(true); 
   const [currentTask, setCurrentTask] = useState<{ id: number; taskName: string; taskTime: number } | null>(null); // 編集対象のタスク
-  // 既存のモーダル用ステート
-  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
-  // 新たに編集モーダル用のステートを追加
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();  
-  const initialRef = React.useRef(null)
-  const finalRef = React.useRef(null)
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<{
-    taskName: string;
-    taskTime: number;
-  }>();
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure(); // 既存のモーダル用
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();  // 編集モーダル用
+  const initialRef = useRef(null)
+  const finalRef = useRef(null)
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<{taskName: string;taskTime: number;}>();
   
 
   useEffect(() => {
@@ -45,6 +32,7 @@ function App() {
       }
     };
     getAllTodos();
+    console.log("useEffectが呼ばれたよ");
   }, []);
 
   if (isLoading) {
@@ -97,14 +85,15 @@ function App() {
   };
 
   // 新規：編集モーダルを開く関数
-  const openEditModal = (todo: Todo) => {
+  const openEditModal = (todo: Todos) => {
     setCurrentTask({ id: todo.id, taskName: todo.title, taskTime: todo.time }); // 編集対象のタスクを設定
     reset({ taskName: todo.title, taskTime: todo.time }); // 初期値をフォームにセット
     onEditOpen(); // 編集モーダルを開く
   };
 
   return (
-    <VStack spacing={4} align="stretch" p={4}>
+    <>
+      <VStack spacing={4} align="stretch" p={4}>
 
       <h1 data-testid="title">タスク管理アプリ</h1>
 
@@ -236,7 +225,9 @@ function App() {
           </Tbody>
         </Table>
       </TableContainer>
-    </VStack>
+      </VStack>
+    </>
+    
   );
 }
 

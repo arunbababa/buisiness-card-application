@@ -1,11 +1,11 @@
-import { Todo } from "../domain/todo";
+import { Todos } from "../domain/todo";
 import { supabase } from "../utils/supabase";
 
-export async function getTodosFromSupabase() : Promise<Todo[]> {
+export async function getTodosFromSupabase() : Promise<Todos[]> {
     const resFromSupabase = await supabase.from("study_records").select("*");
     if (!resFromSupabase.error) {
         const todos = resFromSupabase.data.map((todo) => {
-            return Todo.newTodo(todo.id, todo.title,todo.time);
+            return Todos.newTodo(todo.id, todo.title,todo.time);
         })
         return todos;
     }else{
