@@ -1,6 +1,9 @@
 import { useParams } from "react-router";
 import { supabase } from "../utils/supabase";
 import { useEffect, useState } from "react";
+import { Spinner } from "@chakra-ui/react"
+import { FaGithub, FaTwitter } from "react-icons/fa";
+import { IconButton, Tooltip, HStack, Text , Box} from "@chakra-ui/react";
 
 
 const Cards = () => {
@@ -15,6 +18,7 @@ const Cards = () => {
   x_id: string; 
 };
 
+const [loading, setLoading] = useState(true);
 const params_id = useParams()
 const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
 
@@ -65,18 +69,80 @@ const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
             });
       }
       fetchSkills();
+      setLoading(false);
     }, []);
+
+  if (loading) {
+    console.log("loading...");
+    return <Spinner />;
+  }
+
+  if (!userInfo) {
+    return <p>ユーザー情報が見つかりません</p>;
+  }
     
   return (
-    <>
-      <p>名前:{userInfo.name}</p>
-      <p>自己紹介:{userInfo.description}</p>
-      <p>スキル:{userInfo.skill_name}</p>
-      <p>GitHub:{userInfo.github_id}</p>
-      <p>Qiita:{userInfo.qiita_id}</p>
-      <p>X Tech:{userInfo.x_id}</p>
-    </>
-  );
+  <>
+    {loading ? (
+      <Spinner />
+    ) : !userInfo ? (
+      <p>ユーザー情報が見つかりません</p>
+    ) : (
+      <>
+        <Box 
+    maxWidth="90%" 
+    mx="auto" 
+    my={6} 
+    p={4} 
+    borderWidth="10px" 
+    borderRadius="1g"
+    textAlign="center"
+  >
+    <Text fontSize="lg" fontWeight="bold">名前: {userInfo.name}</Text>
+    <Text fontSize="md" mt={2}>自己紹介: {userInfo.description}</Text>
+    <Text fontSize="md" mt={2}>スキル: {userInfo.skill_name}</Text>
+    <Text fontSize="md" mt={2}>Qiita: {userInfo.qiita_id}</Text>
+
+    <HStack spacing={4} mt={4} justifyContent="center">
+      {/* GitHub */}
+      {userInfo.github_id && (
+        <Tooltip label="GitHub" aria-label="GitHub">
+          <IconButton
+            as="a"
+            href={`https://github.com/${userInfo.github_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<FaGithub />}
+            aria-label="GitHub"
+            size="lg"
+            colorScheme="gray"
+            variant="outline"
+          />
+        </Tooltip>
+      )}
+      {/* X (Twitter) */}
+      {userInfo.x_id && (
+        <Tooltip label="X (Twitter)" aria-label="X (Twitter)">
+          <IconButton
+            as="a"
+            href={`https://x.com/${userInfo.x_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<FaTwitter />}
+            aria-label="X (Twitter)"
+            size="lg"
+            colorScheme="blue"
+            variant="outline"
+          />
+        </Tooltip>
+      )}
+    </HStack>
+  </Box>
+      </>
+    )}
+  </>
+);
+
 };
 
 export default Cards;
