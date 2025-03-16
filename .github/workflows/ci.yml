@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  # masterブランチにPushされたら実行
+      - "**"
 
 jobs:
   build-and-test:
@@ -32,9 +32,8 @@ jobs:
         run: npm run test -- --testPathIgnorePatterns="Mock.spec.tsx"
 
   deploy:
-    needs: build-and-test  # テストが成功したらデプロイ実行
+    needs: build-and-test # テストが成功したらデプロイ実行
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'  # masterブランチの時のみデプロイ
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
