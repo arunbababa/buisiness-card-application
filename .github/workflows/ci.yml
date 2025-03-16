@@ -34,7 +34,6 @@ jobs:
   deploy:
     needs: build-and-test # テストが成功したらデプロイ実行
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' # masterブランチの時のみデプロイ
     steps:
       - name: コードを取得
         uses: actions/checkout@v4
