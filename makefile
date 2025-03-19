@@ -9,7 +9,8 @@ build:
 	npm run build
 
 # Firebaseにデプロイ (ビルド後に実行)
-deploy: build
+deploy:
+	npm run build
 	firebase deploy
 
 # ビルドフォルダを削除

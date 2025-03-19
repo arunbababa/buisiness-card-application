@@ -1,14 +1,12 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { supabase } from "../utils/supabase";
 import { useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/react"
-import { FaGithub, FaTwitter } from "react-icons/fa";
-import { IconButton, Tooltip, HStack, Text , Box} from "@chakra-ui/react";
+import { FaGithub, FaTwitter,  } from "react-icons/fa";
+import { IconButton, Tooltip, HStack, Text , Box, Button} from "@chakra-ui/react";
 
-
-const Cards = () => {
-
-  type UserInfo = {
+// これ別のところに切り出そう
+type UserInfo = {
   user_id: string; 
   name: string; 
   description: string;
@@ -18,9 +16,13 @@ const Cards = () => {
   x_id: string; 
 };
 
-const [loading, setLoading] = useState(true);
-const params_id = useParams()
-const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
+const Cards = () => {
+
+  const [loading, setLoading] = useState(true);
+  const params_id = useParams()
+  const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
+  const navigate = useNavigate();
+  const navigateToHome = () => navigate("/");
 
   useEffect(() => {
       const fetchSkills = async () => {
@@ -29,13 +31,14 @@ const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
               .select("skill_id")
               .eq("user_id", params_id.id);
               console.log("🔍 skillIdData:", skillIdData);
+        console.log(params_id);
         if (skillIdError) {
           console.error("❌ Error fetching skill IDs:", skillIdError);
           return;
         }
         const skill_id = skillIdData[0].skill_id;
         console.log("🔍 skill_id:", skill_id);
-          
+
         const { data: skillData, error: skillError } = await supabase
               .from("skills")
               .select("name")
@@ -98,12 +101,14 @@ const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
     borderRadius="1g"
     textAlign="center"
   >
-    <Text fontSize="lg" fontWeight="bold">名前: {userInfo.name}</Text>
-    <Text fontSize="md" mt={2}>自己紹介: {userInfo.description}</Text>
-    <Text fontSize="md" mt={2}>スキル: {userInfo.skill_name}</Text>
-    <Text fontSize="md" mt={2}>Qiita: {userInfo.qiita_id}</Text>
-
-    <HStack spacing={4} mt={4} justifyContent="center">
+    {/* ボックス便利やな */}
+    <Box textAlign="left"> 
+      <Text fontSize="xl" fontWeight="bold" mb={4}>{userInfo.name}</Text>
+      <Text fontSize="md" fontWeight="bold">自己紹介</Text>
+      <Text fontSize="md" mb={4} dangerouslySetInnerHTML={{ __html: userInfo.description }} />
+      <Text fontSize="md" fontWeight="bold">好きな技術</Text>
+    </Box>
+    <HStack spacing={4} mt={4} justifyContent="space-between">
       {/* GitHub */}
       {userInfo.github_id && (
         <Tooltip label="GitHub" aria-label="GitHub">
@@ -136,8 +141,25 @@ const [userInfo, setUserInfo] = useState<UserInfo>({} as UserInfo);
           />
         </Tooltip>
       )}
+      {/* X (Twitter) */}
+      {userInfo.qiita_id && (
+        <Tooltip label="X (Twitter)" aria-label="X (Twitter)">
+          <IconButton
+            as="a"
+            href={`https://x.com/${userInfo.x_id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={<Spinner />}
+            aria-label="X (Twitter)"
+            size="lg"
+            colorScheme="blue"
+            variant="outline"
+          />
+        </Tooltip>
+      )}
     </HStack>
   </Box>
+  <Button onClick={navigateToHome}>戻る</Button>
       </>
     )}
   </>
