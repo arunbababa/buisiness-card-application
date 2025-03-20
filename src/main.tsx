@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import Cards from './components/cards.tsx'
+import Cards from './components/Cards.tsx'
 import Regester from './components/Regester.tsx'
 
 createRoot(document.getElementById('root')!).render(
@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route index element={<App />} />
           <Route path="cards/:id" element={<Cards />} />
-          <Route path="cards/register" element={<Regester />} />
+          <Route path="cards/regester" element={<Regester />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

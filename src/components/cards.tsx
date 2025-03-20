@@ -37,7 +37,7 @@ const Cards = () => {
           return;
         }
         const skill_id = skillIdData[0].skill_id;
-        console.log("🔍 skill_id:", skill_id);
+        // console.log("🔍 skill_id:", skill_id);
 
         const { data: skillData, error: skillError } = await supabase
               .from("skills")
@@ -103,10 +103,10 @@ const Cards = () => {
   >
     {/* ボックス便利やな */}
     <Box textAlign="left"> 
-      <Text fontSize="xl" fontWeight="bold" mb={4}>{userInfo.name}</Text>
-      <Text fontSize="md" fontWeight="bold">自己紹介</Text>
+      <Text fontSize="xl" fontWeight="bold" mb={4} data-testid="self-name">{userInfo.name}</Text>
+      <Text fontSize="md" fontWeight="bold" data-testid="self-introduce">自己紹介</Text>
       <Text fontSize="md" mb={4} dangerouslySetInnerHTML={{ __html: userInfo.description }} />
-      <Text fontSize="md" fontWeight="bold">好きな技術</Text>
+      <Text fontSize="md" fontWeight="bold" data-testid="like-stack">好きな技術</Text>
     </Box>
     <HStack spacing={4} mt={4} justifyContent="space-between">
       {/* GitHub */}
@@ -141,12 +141,12 @@ const Cards = () => {
           />
         </Tooltip>
       )}
-      {/* X (Twitter) */}
+      {/* Qiita */}
       {userInfo.qiita_id && (
-        <Tooltip label="X (Twitter)" aria-label="X (Twitter)">
+        <Tooltip label="Qiita" aria-label="Qiita">
           <IconButton
             as="a"
-            href={`https://x.com/${userInfo.x_id}`}
+            href={`https://Qiita.com/${userInfo.x_id}`}
             target="_blank"
             rel="noopener noreferrer"
             icon={<Spinner />}

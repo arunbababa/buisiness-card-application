@@ -31,7 +31,7 @@ const App = () => {
               aria-invalid={errors.userID ? "true" : "false"} 
               />
           {errors.userID && <Text color="red.500">{errors.userID.message}</Text>}
-          <Button type="submit" colorScheme="blue">送信</Button>
+          <Button  type="submit" colorScheme="blue">送信</Button>
       </FormControl>
     </form>
     <Button type="submit" colorScheme="red" onClick={goRegister}>新規登録はこちら</Button>

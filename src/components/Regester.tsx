@@ -41,9 +41,9 @@ const Regester = () => {
 
     const navigate = useNavigate();
     const { register, handleSubmit, formState: {errors} } = useForm<RegisterFormData>();
-    const onSubmit = (date: RegisterFormData) => {
-        insert_to_supabase(date.userID, date.userName, date.selfIntroduce, date.selectSkill, date.GitHub_ID, date.Qiita_ID, date.X_ID);
-        navigate('/');
+    const onSubmit = async(date: RegisterFormData) => {
+        await insert_to_supabase(date.userID, date.userName, date.selfIntroduce, date.selectSkill, date.GitHub_ID, date.Qiita_ID, date.X_ID);
+        await navigate('/');
     };
 
     const [skills, setSkills] = useState<{name: string}[]>([]);
@@ -76,6 +76,7 @@ const Regester = () => {
                         pattern: { value: /^[A-Za-z]+$/, message: "英字のみで入力してください" }
                         })}
                     placeholder="coffee"
+                    data-testid="user-id"
                     aria-invalid={errors.userID ? "true" : "false"} 
                     />
                 {errors.userID && <Text color="red.500">{errors.userID.message}</Text>}
@@ -85,6 +86,7 @@ const Regester = () => {
                 <FormLabel>お名前</FormLabel>
                 <Input {...register("userName", {required: "お名前は必須です", minLength: {value: 2, message: "2文字以上で入力してください"}})} 
                     placeholder="名刺太郎" 
+                    data-testid="user-name"
                     aria-invalid={errors.userName ? "true" : "false"}/>
                 {errors.userName && <Text color="red.500">{errors.userName.message}</Text>}
             </FormControl>
@@ -93,7 +95,9 @@ const Regester = () => {
                 <FormLabel>自己紹介</FormLabel>
                 <Input {...register("selfIntroduce", {required: "自己紹介文は必須です", minLength: {value: 10, message: "10文字以上で入力してください"}, maxLength: {value: 100, message: "100文字以内で入力してください"}})} 
                     placeholder="自己紹介文を書いてください" 
-                    aria-invalid={errors.selfIntroduce ? "true" : "false"}/>
+                    aria-invalid={errors.selfIntroduce ? "true" : "false"}
+                    data-testid="self-introduce"
+                    />
                 {errors.selfIntroduce && <Text color="red.500">{errors.selfIntroduce.message}</Text>}
             </FormControl>
 
