@@ -13,6 +13,9 @@ const App = () => {
     console.log(date);
     navigate(`/cards/${date.userID}`);
   }
+  const goRegister = () => {
+    navigate("/cards/register");
+  }
 
   return (
     <>
@@ -31,6 +34,8 @@ const App = () => {
           <Button type="submit" colorScheme="blue">送信</Button>
       </FormControl>
     </form>
+    <Button type="submit" colorScheme="red" onClick={goRegister}>新規登録はこちら</Button>
+
     </>
   )
 }
