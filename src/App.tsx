@@ -14,7 +14,7 @@ const App = () => {
     navigate(`/cards/${date.userID}`);
   }
   const goRegister = () => {
-    navigate("/cards/register");
+    navigate("/card/register");
   }
 
   return (
