@@ -13,7 +13,9 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route index element={<App />} />
           <Route path="cards/:id" element={<Cards />} />
-          <Route path="cards/regester" element={<Regester />} />
+        </Routes>
+        <Routes>
+          <Route path="card/register" element={<Regester />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
