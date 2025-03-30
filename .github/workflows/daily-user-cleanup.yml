@@ -3,7 +3,7 @@ name: Daily User Cleanup
 on:
   schedule:
     - cron: "0 21 * * *"
-  workflow_dispatch: # 手動でも実行可能にする
+  workflow_dispatch:
 
 jobs:
   cleanup:
