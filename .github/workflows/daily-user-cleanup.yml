@@ -27,4 +27,4 @@ jobs:
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> $GITHUB_ENV
 
       - name: 前日作成データの削除バッチを実行
-        run: npx ts-node --esm --project tsconfig.app.json ./batch/index.ts
+        run: npx ts-node ./batch/index.mts
