@@ -26,5 +26,8 @@
   "paths": {
       "@/*":["./src/*"]
     },
-  "include": ["src","jest.setup.ts"]
+  "include": ["src","jest.setup.ts"],
+  "ts-node": {
+    "esm": true
+  }
 }
