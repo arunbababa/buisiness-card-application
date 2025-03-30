@@ -146,11 +146,11 @@ const Cards = () => {
         <Tooltip label="Qiita" aria-label="Qiita">
           <IconButton
             as="a"
-            href={`https://Qiita.com/${userInfo.x_id}`}
+            href={`https://Qiita.com/${userInfo.qiita_id}`}
             target="_blank"
             rel="noopener noreferrer"
             icon={<Spinner />}
-            aria-label="X (Twitter)"
+            aria-label="Qiita"
             size="lg"
             colorScheme="blue"
             variant="outline"

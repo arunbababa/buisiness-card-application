@@ -13,8 +13,6 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route index element={<App />} />
           <Route path="cards/:id" element={<Cards />} />
-        </Routes>
-        <Routes>
           <Route path="card/register" element={<Regester />} />
         </Routes>
       </BrowserRouter>

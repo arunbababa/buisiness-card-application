@@ -43,6 +43,7 @@ const Regester = () => {
     const { register, handleSubmit, formState: {errors} } = useForm<RegisterFormData>();
     const onSubmit = async(date: RegisterFormData) => {
         await insert_to_supabase(date.userID, date.userName, date.selfIntroduce, date.selectSkill, date.GitHub_ID, date.Qiita_ID, date.X_ID);
+        console.log("🟢 navigate('/') 実行前");
         await navigate('/');
     };
 

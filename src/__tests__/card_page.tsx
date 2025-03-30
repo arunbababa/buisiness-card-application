@@ -13,17 +13,47 @@ jest.mock("react-router", () => ({
   useParams: jest.fn(),
 }));
 
-// Supabase のデータ取得をモック化
 jest.mock("../utils/supabase", () => ({
   supabase: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          data: [{ skill_id: "1" }], // ダミーのスキルID
-          error: null,
+    from: jest.fn((tableName: string) => {
+      return {
+        select: jest.fn(() => ({
+          eq: jest.fn(() => {
+            if (tableName === "user_skill") {
+              return {
+                data: [{ skill_id: 1 }],
+                error: null,
+              };
+            }
+
+            if (tableName === "skills") {
+              return {
+                data: [{ name: "React" }],
+                error: null,
+              };
+            }
+
+            if (tableName === "users") {
+              return {
+                data: [
+                  {
+                    user_id: "test_id",
+                    name: "テストユーザー",
+                    description: "これは自己紹介です。",
+                    github_id: "testgithub",
+                    qiita_id: "testqiita",
+                    x_id: "testxid"
+                  },
+                ],
+                error: null,
+              };
+            }
+
+            return { data: [], error: null };
+          }),
         })),
-      })),
-    })),
+      };
+    }),
   },
 }));
 

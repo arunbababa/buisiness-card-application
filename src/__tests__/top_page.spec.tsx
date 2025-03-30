@@ -66,7 +66,7 @@ describe("トップページのテスト", () => {
     expect(screen.getByText("ユーザーIDは必須です")).toBeVisible();
   });
 
-  test("新規登録ボタンを押すと/cards/registerに遷移することをテストする", async () => {
+  test("新規登録ボタンを押すと/card/registerに遷移することをテストする", async () => {
     const navigate = jest.fn();
     (useNavigate as jest.Mock).mockReturnValue(navigate);
 
@@ -80,7 +80,7 @@ describe("トップページのテスト", () => {
 
     await userEvent.click(registerButton);
 
-    expect(navigate).toHaveBeenCalledWith("/cards/register");
+    expect(navigate).toHaveBeenCalledWith("/card/register");
   });
 
 });
