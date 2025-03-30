@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "target": "buisiness-card-app",
     "public": "build",
     "ignore": [
       "firebase.json",

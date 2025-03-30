@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "kadai3-mock"
-  }
+    "default": "buisiness-card-app"
+  },
+  "targets": {
+    "buisiness-card-app": {
+      "hosting": {
+        "buisiness-card-app": [
+          "buisiness-card-app"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

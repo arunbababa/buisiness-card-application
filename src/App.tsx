@@ -1,36 +1,41 @@
-import { Button, HStack } from "@chakra-ui/react"
-import { supabase } from "./utils/supabase"
-import { useEffect, useState } from "react";
+import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react"
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 const App = () => {
 
-  const [skills, setSkills] = useState<{ id: number; name: string }[]>([]);
-
-  useEffect(() => {
-    const fetchSkills = async () => {
-      const { data, error } = await supabase.from("skills").select("*");
-      
-      if (error) {
-        console.error("Error fetching skills:", error);
-      } else {
-        setSkills(data);
-      }
-    };
-
-    fetchSkills();
-  }, []);
+  interface RegisterFormData {
+  userID: string;
+  }
+  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
+  const onSubmit = (date: RegisterFormData) => {
+    console.log(date);
+    navigate(`/cards/${date.userID}`);
+  }
+  const goRegister = () => {
+    navigate("/card/register");
+  }
 
   return (
     <>
-      <HStack>
-      <Button>Click me</Button>
-      <Button>Click me</Button>
-    </HStack>
-    <li>
-      {skills.map((skill) => (
-        <div key={skill.id}>{skill.name}</div>
-      ))}
-    </li>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl>
+          <FormLabel>ユーザIDを検索してください</FormLabel>
+          <Input
+              {...register("userID", { 
+                  required: "ユーザーIDは必須です", 
+                  pattern: { value: /^[A-Za-z]+$/, message: "英字のみで入力してください" }
+                  })}
+              placeholder="coffee"
+              aria-invalid={errors.userID ? "true" : "false"} 
+              />
+          {errors.userID && <Text color="red.500">{errors.userID.message}</Text>}
+          <Button  type="submit" colorScheme="blue">送信</Button>
+      </FormControl>
+    </form>
+    <Button type="submit" colorScheme="red" onClick={goRegister}>新規登録はこちら</Button>
+
     </>
   )
 }
