@@ -23,11 +23,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
+  "ts-node": {
+    "esm": true
+  },
   "paths": {
       "@/*":["./src/*"]
     },
   "include": ["src","jest.setup.ts"],
-  "ts-node": {
-    "esm": true
-  }
 }
