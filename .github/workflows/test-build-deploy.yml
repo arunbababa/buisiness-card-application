@@ -6,7 +6,7 @@ on:
       - "**"
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: コードを取得
@@ -25,14 +25,11 @@ jobs:
           echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> $GITHUB_ENV
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> $GITHUB_ENV
 
-      - name: アプリをビルド
-        run: npm run build
-
       - name: Run Tests
         run: npm run test -- --testPathIgnorePatterns="Mock.spec.tsx"
 
-  deploy:
-    needs: build-and-test # テストが成功したらデプロイ実行
+  build-and-deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: コードを取得
@@ -45,6 +42,9 @@ jobs:
 
       - name: 依存関係をインストール
         run: npm install
+
+      - name: アプリをビルド
+        run: npm run build
 
       - name: Firebase CLI をインストール
         run: npm install -g firebase-tools

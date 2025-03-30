@@ -37,7 +37,6 @@ const Cards = () => {
           return;
         }
         const skill_id = skillIdData[0].skill_id;
-        // console.log("🔍 skill_id:", skill_id);
 
         const { data: skillData, error: skillError } = await supabase
               .from("skills")
@@ -73,7 +72,7 @@ const Cards = () => {
       }
       fetchSkills();
       setLoading(false);
-    }, []);
+    }, [params_id]);
 
   if (loading) {
     console.log("loading...");
