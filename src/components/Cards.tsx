@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
-import { supabase } from "../utils/supabase";
+import { supabase } from "../utils/API/supabase";
 import { useEffect, useState } from "react";
-import { Spinner } from "@chakra-ui/react"
+import { Icon } from "@chakra-ui/react"
 import { FaGithub, FaTwitter,  } from "react-icons/fa";
 import { IconButton, Tooltip, HStack, Text , Box, Button} from "@chakra-ui/react";
 
@@ -30,10 +30,7 @@ const Cards = () => {
               .from("user_skill")
               .select("skill_id")
               .eq("user_id", params_id.id);
-              console.log("🔍 skillIdData:", skillIdData);
-        console.log(params_id);
         if (skillIdError) {
-          console.error("❌ Error fetching skill IDs:", skillIdError);
           return;
         }
         const skill_id = skillIdData[0].skill_id;
@@ -42,24 +39,18 @@ const Cards = () => {
               .from("skills")
               .select("name")
               .eq("id", skill_id);
-              console.log("🔍 skillData:", skillData)
             if (skillError) {
-              console.error("❌ Error fetching skills:", skillError);
               return;
             }
         const skill_name = skillData[0].name;
-        console.log("🔍 skill_name:", skill_name);
 
         const { data: userData, error: userError } = await supabase
               .from("users")
               .select("*")
               .eq("user_id", params_id.id);
-              console.log("🔍 userData:", userData);
             if (userError) {
-              console.error("❌ Error fetching users:", userError);
               return;
             }
-            console.log("🔍 userData:", userData);
             setUserInfo({
               user_id: userData[0].user_id,
               name: userData[0].name,
@@ -75,8 +66,7 @@ const Cards = () => {
     }, [params_id]);
 
   if (loading) {
-    console.log("loading...");
-    return <Spinner />;
+    return <Icon/>;
   }
 
   if (!userInfo) {
@@ -86,7 +76,7 @@ const Cards = () => {
   return (
   <>
     {loading ? (
-      <Spinner />
+      <Icon />
     ) : !userInfo ? (
       <p>ユーザー情報が見つかりません</p>
     ) : (
@@ -106,6 +96,7 @@ const Cards = () => {
       <Text fontSize="md" fontWeight="bold" data-testid="self-introduce">自己紹介</Text>
       <Text fontSize="md" mb={4} dangerouslySetInnerHTML={{ __html: userInfo.description }} />
       <Text fontSize="md" fontWeight="bold" data-testid="like-stack">好きな技術</Text>
+      <Text fontSize="xl" fontWeight="bold" mb={4} data-testid="self-name">{userInfo.skill_name}</Text>
     </Box>
     <HStack spacing={4} mt={4} justifyContent="space-between">
       {/* GitHub */}
@@ -148,7 +139,7 @@ const Cards = () => {
             href={`https://Qiita.com/${userInfo.qiita_id}`}
             target="_blank"
             rel="noopener noreferrer"
-            icon={<Spinner />}
+            icon={<Icon/>}
             aria-label="Qiita"
             size="lg"
             colorScheme="blue"
@@ -158,7 +149,7 @@ const Cards = () => {
       )}
     </HStack>
   </Box>
-  <Button onClick={navigateToHome}>戻る</Button>
+  <Button _hover={{bg:"blue.400"}} ml="18px" textAlign="center" onClick={navigateToHome}>戻る</Button>
       </>
     )}
   </>

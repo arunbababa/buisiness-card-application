@@ -10,7 +10,6 @@ const App = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
   const onSubmit = (date: RegisterFormData) => {
-    console.log(date);
     navigate(`/cards/${date.userID}`);
   }
   const goRegister = () => {
@@ -19,22 +18,22 @@ const App = () => {
 
   return (
     <>
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl>
-          <FormLabel>ユーザIDを検索してください</FormLabel>
-          <Input
-              {...register("userID", { 
-                  required: "ユーザーIDは必須です", 
-                  pattern: { value: /^[A-Za-z]+$/, message: "英字のみで入力してください" }
-                  })}
-              placeholder="coffee"
-              aria-invalid={errors.userID ? "true" : "false"} 
-              />
-          {errors.userID && <Text color="red.500">{errors.userID.message}</Text>}
-          <Button  type="submit" colorScheme="blue">送信</Button>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
+      <FormControl maxW="400px" mt="100px">
+      <FormLabel textAlign="center">ユーザIDを検索してください</FormLabel>
+      <Input
+        {...register("userID", { 
+        required: "ユーザーIDは必須です", 
+        pattern: { value: /^[A-Za-z]+$/, message: "英字のみで入力してください" }
+        })}
+        placeholder="coffee"
+        aria-invalid={errors.userID ? "true" : "false"} 
+      />
+      {errors.userID && <Text color="red.500" textAlign="center">{errors.userID.message}</Text>}
       </FormControl>
+      <Button type="submit" colorScheme="blue" variant="solid" width="200px">検索</Button>
+      <Button onClick={goRegister} colorScheme="teal" variant="outline" width="200px">新規登録はこちら</Button>
     </form>
-    <Button type="submit" colorScheme="red" onClick={goRegister}>新規登録はこちら</Button>
 
     </>
   )

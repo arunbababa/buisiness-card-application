@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/
 import { useForm } from "react-hook-form";
 import { Select } from '@chakra-ui/react'
 import { useEffect, useState } from 'react';
-import { supabase } from '../utils/supabase';
+import { supabase } from '../utils/API/supabase';
 import { useNavigate } from 'react-router';
 
 interface RegisterFormData {
@@ -23,7 +23,6 @@ const insert_to_supabase = async (user_id: string, name: string, description: st
         .eq("name", skill_name); // 🔹 skill_name で検索
 
     if (skillError || !skillData || skillData.length === 0) {
-        console.error("❌ skill_id の取得に失敗:", skillError);
         return;
     }
 
@@ -43,7 +42,6 @@ const Regester = () => {
     const { register, handleSubmit, formState: {errors} } = useForm<RegisterFormData>();
     const onSubmit = async(date: RegisterFormData) => {
         await insert_to_supabase(date.userID, date.userName, date.selfIntroduce, date.selectSkill, date.GitHub_ID, date.Qiita_ID, date.X_ID);
-        console.log("🟢 navigate('/') 実行前");
         await navigate('/');
     };
 
@@ -66,9 +64,9 @@ const Regester = () => {
   return (
     <>
     {/* バリデーション部分はwatchでさらに改善できる */}
-        <Text>新規名刺登録</Text>
         <VStack spacing={4} align="stretch" as="form" onSubmit={handleSubmit(onSubmit)}>
             <FormControl>
+                <Text textAlign="center" mb="20px">新規名刺登録</Text>
                 <FormLabel>好きな英単語 ※ユーザIDになります</FormLabel>
                 <Input 
                     {...register("userID", { 
@@ -102,7 +100,7 @@ const Regester = () => {
                 {errors.selfIntroduce && <Text color="red.500">{errors.selfIntroduce.message}</Text>}
             </FormControl>
 
-            <Select placeholder='Select option' {...register("selectSkill", {required: "選択は必須です"})}
+            <Select placeholder='好きな技術を選択してください' {...register("selectSkill", {required: "選択は必須です"})}
                 aria-invalid={errors.selectSkill ? "true" : "false"}
                 >
                 {skills.map((skill, index) => (
@@ -110,8 +108,6 @@ const Regester = () => {
                 ))}
             </Select>
             {errors.selectSkill && <Text color="red.500">{errors.selectSkill.message}</Text>}
-
-
 
             <FormControl>
                 <FormLabel>GitHub ID</FormLabel>
