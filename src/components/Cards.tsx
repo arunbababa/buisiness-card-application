@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router";
-import { supabase } from "../utils/API/supabase";
+import { supabase } from "../API/supabase";
 import { useEffect, useState } from "react";
 import { Icon } from "@chakra-ui/react"
 import { FaGithub, FaTwitter,  } from "react-icons/fa";
