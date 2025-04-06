@@ -1,4 +1,4 @@
-type FormData = {
+type UserInfo = {
     user_id: string,
     user_name: string,
     description: string,
@@ -8,4 +8,4 @@ type FormData = {
     x_id: string | null
 }
 
-export default FormData;
+export default UserInfo;

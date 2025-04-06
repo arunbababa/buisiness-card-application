@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { supabase } from '../API/supabase';
 import { useForm } from 'react-hook-form';
-import FormData from '../types/FormData'
+import UserInfo from '../types/UserInfo'
 
 const RegesterHook = () => {
     const [skills, setSkills] = useState<{name: string}[]>([]);
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: {errors} } = useForm<FormData>();
-    const onSubmit = async(data: FormData) => {
+    const { register, handleSubmit, formState: {errors} } = useForm<UserInfo>();
+    const onSubmit = async(data: UserInfo) => {
         console.log(data)
         await insert_to_supabase(data);
         await navigate('/');
@@ -22,8 +22,8 @@ const RegesterHook = () => {
         setSkills(skills);
     }
 
-    const insert_to_supabase = async (FormData:FormData) => {
-        const {user_id,user_name,description,skill,github_id,qiita_id,x_id} = FormData
+    const insert_to_supabase = async (UserInfo:UserInfo) => {
+        const {user_id,user_name,description,skill,github_id,qiita_id,x_id} = UserInfo
         const { data: skillData, error: skillError } = await supabase
             .from("skills")
             .select("id")
@@ -40,7 +40,6 @@ const RegesterHook = () => {
         ]);
     }
 
-    // supabaseからスキル一覧を配列としてとってくる
     useEffect(() => {     
         fetchSkills();
     },[]);

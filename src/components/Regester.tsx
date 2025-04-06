@@ -1,6 +1,6 @@
 import { Button, FormControl, FormLabel, Input, Text, VStack } from '@chakra-ui/react'
 import { Select } from '@chakra-ui/react'
-import RegesterHook from '../hooks/Regester';
+import RegesterHook from '../hooks/RegesterHook';
 
 const Regester = () => {
 
